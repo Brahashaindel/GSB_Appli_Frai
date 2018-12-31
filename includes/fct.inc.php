@@ -15,29 +15,43 @@
  */
 
 /**
- * Teste si un quelconque visiteur est connecté
+ * Teste si un quelconque utilisateur est connecté
  *
  * @return vrai ou faux
  */
 function estConnecte()
 {
-    return isset($_SESSION['idVisiteur']);//retourne l'instruction demandé qui est isset. isset détérmine si une variable est définie et est différente de null 
+    return isset($_SESSION['idUtilisateur']);//retourne l'instruction demandé qui est isset. isset détérmine si une variable est définie et est différente de null 
 }
 
+function estVisiteurConnecte()
+{
+    if (estConnecte()){
+    return ($_SESSION['statut']=='visiteur');
+    }
+}
+
+function estComptableConnecte()
+{
+    if (estConnecte()){
+    return ($_SESSION['statut']=='comptable');
+    }
+}
 /**
- * Enregistre dans une variable session les infos d'un visiteur
+ * Enregistre dans une variable session les infos d'un utilsateur
  *
- * @param String $idVisiteur ID du visiteur
- * @param String $nom        Nom du visiteur
- * @param String $prenom     Prénom du visiteur
+ * @param String $idUtilisateur ID du utilisateur
+ * @param String $nom        Nom du utilisateur
+ * @param String $prenom     Prénom du utiliteur
  *
  * @return null
  */
-function connecter($idVisiteur, $nom, $prenom)//déclaration d'une fonction avec le nom suivie de ses parametres qui sont des variables. les variables sont précédé de $
+function connecter($idUtilisateur, $nom, $prenom,$statut)//déclaration d'une fonction avec le nom suivie de ses parametres qui sont des variables. les variables sont précédé de $
 {
-    $_SESSION['idVisiteur'] = $idVisiteur;//$_session s'utilise lorsque l'on ouvre une variable
+    $_SESSION['idUtilisateur'] = $idUtilisateur;//$_session s'utilise lorsque l'on ouvre une variable
     $_SESSION['nom'] = $nom;
     $_SESSION['prenom'] = $prenom;
+    $_SESSION['statut']=$statut;
 }
 
 /**

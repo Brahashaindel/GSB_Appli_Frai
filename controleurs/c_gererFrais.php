@@ -1,4 +1,4 @@
-<?php
+                                                                                                                                        <?php
 /**
  * Gestion des frais
  *
@@ -18,7 +18,7 @@ $idVisiteur = $_SESSION['idVisiteur'];
 $mois = getMois(date('d/m/Y'));
 $numAnnee = substr($mois, 0, 4);//substr — Retourne un segment de chaîne
 $numMois = substr($mois, 4, 2);
-$action = filter_input(INPUT_GET, 'action', FILTER_SANITIZE_STRING);
+$action = filter_input(INPUT_GET, 'action', FILTER_SANITIZE_STRING);//filter_input — Récupère une variable externe et la filtre
 switch ($action) {
 case 'saisirFrais':
     if ($pdo->estPremierFraisMois($idVisiteur, $mois)) {

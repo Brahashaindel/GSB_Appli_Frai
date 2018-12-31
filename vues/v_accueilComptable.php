@@ -1,6 +1,7 @@
 <?php
+
 /**
- * Gestion de l'accueil
+ * Vue Accueil
  *
  * PHP Version 7
  *
@@ -13,13 +14,14 @@
  * @version   GIT: <0>
  * @link      http://www.reseaucerta.org Contexte « Laboratoire GSB »
  */
- $estVisiteurConnecte = estVisiteurConnecte();
- $estComptableConnecte = estComptableConnecte();
- 
-if ($estVisiteurConnecte) {
-    include 'vues/v_accueilVisiteurs.php';
-} else if($estComptableConnecte){
-    include 'vues/v_accueilComptable.php';
-} else {
-    include 'vues/v_connexion.php';
-}
+
+?>
+<div id="accueil">
+    <h2>
+        Gestion des frais<small> - Comptable : 
+            <?php 
+            echo $_SESSION['prenom'] . ' ' . $_SESSION['nom']
+            ?></small>
+    </h2>
+</div>
+

@@ -27,16 +27,27 @@ case 'valideConnexion':
     $login = filter_input(INPUT_POST, 'login', FILTER_SANITIZE_STRING);//FILTER_SANITIZE_STRING: filtre de netoyage sur une chaine de charactère
     $mdp = filter_input(INPUT_POST, 'mdp', FILTER_SANITIZE_STRING);
     $visiteur = $pdo->getInfosVisiteur($login, $mdp);
-    if (!is_array($visiteur)) {//array veut dire contenu
+    $comptable = $pdo->getInfosComptable($login, $mdp);
+    if (!is_array($visiteur)&& !is_array($comptable)) {//array veut dire contenu!
         ajouterErreur('Login ou mot de passe incorrect');
         include 'vues/v_erreurs.php';
         include 'vues/v_connexion.php';
     } else {
+        if (is_array($visiteur)){
+            
         $id = $visiteur['id'];
         $nom = $visiteur['nom'];
         $prenom = $visiteur['prenom'];
-        connecter($id, $nom, $prenom);
-        header('Location: index.php');
+        $statut='visiteur';
+        
+    }elseif(is_array($comptable)){
+        $id = $comptable['id'];
+        $nom = $comptable['nom'];
+        $prenom = $comptable['prenom'];
+        $statut='comptable';
+    }
+    connecter($id, $nom, $prenom, $statut);
+    header('Location: index.php');//header — Envoie un en-tête HTTP
     }
     break;
 default:
