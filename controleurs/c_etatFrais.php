@@ -1,21 +1,7 @@
 <?php
-/**
- * Gestion de l'affichage des frais
- *
- * PHP Version 7
- *
- * @category  PPE
- * @package   GSB
- * @author    Réseau CERTA <contact@reseaucerta.org>
- * @author    José GIL <jgil@ac-nice.fr>
- * @copyright 2017 Réseau CERTA
- * @license   Réseau CERTA
- * @version   GIT: <0>
- * @link      http://www.reseaucerta.org Contexte « Laboratoire GSB »
- */
 
 $action = filter_input(INPUT_GET, 'action', FILTER_SANITIZE_STRING);
-$idVisiteur = $_SESSION['idVisiteur'];
+$idVisiteur = $_SESSION['idUtilisateur'];
 switch ($action) {
 case 'selectionnerMois':
     $lesMois = $pdo->getLesMoisDisponibles($idVisiteur);
@@ -23,7 +9,7 @@ case 'selectionnerMois':
     // on demande toutes les clés, et on prend la première,
     // les mois étant triés décroissants
     $lesCles = array_keys($lesMois);
-    $moisASelectionner = $lesCles[0];
+    $moisASelectionner = $lesCles;
     include 'vues/v_listeMois.php';
     break;
 case 'voirEtatFrais':
@@ -34,7 +20,7 @@ case 'voirEtatFrais':
     $lesFraisHorsForfait = $pdo->getLesFraisHorsForfait($idVisiteur, $leMois);
     $lesFraisForfait = $pdo->getLesFraisForfait($idVisiteur, $leMois);
     $lesInfosFicheFrais = $pdo->getLesInfosFicheFrais($idVisiteur, $leMois);
-    $numAnnee = substr($leMois, 0, 4);
+    $numAnnee = substr($leMois, 0, 4);//substr — Retourne un segment de chaîne
     $numMois = substr($leMois, 4, 2);
     $libEtat = $lesInfosFicheFrais['libEtat'];
     $montantValide = $lesInfosFicheFrais['montantValide'];

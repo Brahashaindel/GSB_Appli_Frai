@@ -1,0 +1,15 @@
+<?php
+$mois =getMois(date('d/m/y'));
+$moisPrecedent = getMoisPrecedent($mois);
+$pdo-> clotureFiches($moisPrecedent);
+
+$action= filter_input(INPUT_GET,'action',FILTER_SANITIZE_STRING);
+switch ($action){
+   case 'selectionnerVisiteurMois':
+        $lesVisiteurs = $pdo->getVisiteurs();
+        include 'vues/v_listesVisiteursMois.php';   
+            
+        break;
+   default;
+   
+}

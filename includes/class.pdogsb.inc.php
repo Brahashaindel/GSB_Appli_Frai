@@ -1,40 +1,5 @@
 <?php
-/**
- * Classe d'accès aux données.
- *
- * PHP Version 7
- *
- * @category  PPE
- * @package   GSB
- * @author    Cheri Bibi - Réseau CERTA <contact@reseaucerta.org>
- * @author    José GIL - CNED <jgil@ac-nice.fr>
- * @copyright 2017 Réseau CERTA
- * @license   Réseau CERTA
- * @version   GIT: <0>
- * @link      http://www.php.net/manual/fr/book.pdo.php PHP Data Objects sur php.net
- */
 
-/**
- * Classe d'accès aux données.
- *
- * Utilise les services de la classe PDO
- * pour l'application GSB
- * Les attributs sont tous statiques,
- * les 4 premiers pour la connexion
- * $monPdo de type PDO
- * $monPdoGsb qui contiendra l'unique instance de la classe
- *
- * PHP Version 7
- *
- * @category  PPE
- * @package   GSB
- * @author    Cheri Bibi - Réseau CERTA <contact@reseaucerta.org>
- * @author    José GIL <jgil@ac-nice.fr>
- * @copyright 2017 Réseau CERTA
- * @license   Réseau CERTA
- * @version   Release: 1.0
- * @link      http://www.php.net/manual/fr/book.pdo.php PHP Data Objects sur php.net
- */
 
 class PdoGsb//pour que l'application puisse entrer dans la base de donné
 {
@@ -510,4 +475,40 @@ class PdoGsb//pour que l'application puisse entrer dans la base de donné
         $requetePrepare->bindParam(':unMois', $mois, PDO::PARAM_STR);
         $requetePrepare->execute();
     }
+    /**
+    * Retourne vrai si toutes les fiches du mois precdentes sont cloturées
+     * @param int $moisPrecedent Mois précédent le mois actuel
+    * @return vrai ou faux
+    */
+   public function clotureFiches($moisPrecedent)
+   {
+      $requetePrepare = PdoGSB::$monPdo->prepare(
+          'UPDATE ficheFrais.id '
+          . 'SET idEtat = CL'
+          . 'WHERE ficheFrais.idEtat = CR'
+          . 'AND ficheFrais.mois = :unMois'
+       ); 
+      $requetePrepare->bindparam(':unMois',$moisPrecedent, PDO::PARAM_STR);//Lie un paramètre à un nom de variable spécifique
+      $requetePrepare->execute();
+   }
+   
+
+
+    /**
+    *Fonction qui va recuperer les visiteurs
+     * @param int $moisPrecedent Mois précédent le mois actuel
+    * @return vrai ou faux 
+    */
+
+    Public Function getVisiteurs(){
+         $requetePrepare = PdoGSB::$monPdo->prepare(
+            'SELECT * '
+            .'FROM visiteur ' 
+            .'ORDER BY visiteur.nom'
+                 );
+        $requetePrepare->execute();  
+        $lesVisiteurs = $requetePrepare->fetch();
+        return $lesVisiteurs;
+    }
+ 
 }

@@ -1,18 +1,5 @@
 <?php
-/**
- * Fonctions pour l'application GSB
- *
- * PHP Version 7
- *
- * @category  PPE
- * @package   GSB
- * @author    Cheri Bibi - Réseau CERTA <contact@reseaucerta.org>
- * @author    José GIL <jgil@ac-nice.fr>
- * @copyright 2017 Réseau CERTA
- * @license   Réseau CERTA
- * @version   GIT: <0>
- * @link      http://www.php.net/manual/fr/book.pdo.php PHP Data Objects sur php.net
- */
+
 
 /**
  * Teste si un quelconque utilisateur est connecté
@@ -102,12 +89,35 @@ function dateAnglaisVersFrancais($maDate)
  */
 function getMois($date)
 {
-    @list($jour, $mois, $annee) = explode('/', $date);
+    @list($jour, $mois, $annee) = explode('/', $date);//sert 
     unset($jour);//unset — Détruit une variable
     if (strlen($mois) == 1) {//strlen — Calcule la taille d'une chaîne
-        $mois = '0' . $mois;
+        $mois = '0' . $mois;//concarénation du mois et 0
     }
     return $annee . $mois;
+}
+
+ /**
+ * Fonction qui retourne le mois précédent un mois passé en paramètre
+ *
+ * @param String $mois Contient le mois à utiliser
+ *
+ * @return String le mois d'avant
+ */
+function getMoisPrecedent($mois)
+{
+    $numAnnee = substr($mois, 0, 4);//Retourne un segment de chaîne allant du caractère 0 au 4
+    $numMois = substr($mois, 4, 2);
+    if ($numMois == '01') {
+        $numMois = '12';
+        $numAnnee--;
+    } else {
+        $numMois--;
+    }
+    if (strlen($numMois) == 1) {//Calcule la taille d'une chaîne
+        $numMois = '0' . $numMois;
+    }
+    return $numAnnee . $numMois;
 }
 
 /* gestion des erreurs */

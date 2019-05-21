@@ -1,18 +1,5 @@
 <?php
-/**
- * Vue État de Frais
- *
- * PHP Version 7
- *
- * @category  PPE
- * @package   GSB
- * @author    Réseau CERTA <contact@reseaucerta.org>
- * @author    José GIL <jgil@ac-nice.fr>
- * @copyright 2017 Réseau CERTA
- * @license   Réseau CERTA
- * @version   GIT: <0>
- * @link      http://www.reseaucerta.org Contexte « Laboratoire GSB »
- */
+
 ?>
 <hr>
 <div class="panel panel-primary">
@@ -56,6 +43,7 @@
             <th class="libelle">Libellé</th>
             <th class='montant'>Montant</th>                
         </tr>
+        
         <?php
         foreach ($lesFraisHorsForfait as $unFraisHorsForfait) {
             $date = $unFraisHorsForfait['date'];
