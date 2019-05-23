@@ -1,7 +1,7 @@
 <?php
 
 
-class PdoGsb//pour que l'application puisse entrer dans la base de donné
+class PdoGsb
 {
     private static $serveur = 'mysql:host=localhost';
     private static $bdd = 'dbname=gsb_frais';
@@ -16,12 +16,12 @@ class PdoGsb//pour que l'application puisse entrer dans la base de donné
      */
     private function __construct()
     {
-        PdoGsb::$monPdo = new PDO(//fonction qui permet de se connecter à la base de donnée
-            PdoGsb::$serveur . ';' . PdoGsb::$bdd,//sert a concatener.
+        PdoGsb::$monPdo = new PDO(
+            PdoGsb::$serveur . ';' . PdoGsb::$bdd,
             PdoGsb::$user,
             PdoGsb::$mdp
         );
-        PdoGsb::$monPdo->query('SET CHARACTER SET utf8');//requette en sql
+        PdoGsb::$monPdo->query('SET CHARACTER SET utf8');
     }
 
     /**
@@ -63,14 +63,50 @@ class PdoGsb//pour que l'application puisse entrer dans la base de donné
             . 'FROM visiteur '
             . 'WHERE visiteur.login = :unLogin AND visiteur.mdp = :unMdp'
         );
-        $requetePrepare->bindParam(':unLogin', $login, PDO::PARAM_STR);//variable dans laquel on enregistre tout ce que l'on a besoin pour la requette
+        $requetePrepare->bindParam(':unLogin', $login, PDO::PARAM_STR);
         $requetePrepare->bindParam(':unMdp', $mdp, PDO::PARAM_STR);
         $requetePrepare->execute();
-        return $requetePrepare->fetch();//fetch est un tableu qui retourne les resultats de la requete
+        return $requetePrepare->fetch();
     }
     
-    
-    
+    /**
+     * Fonction qui retourne l'id d'un visiteur en fonction de son nom et son prenom
+     * 
+     * @param type $nom
+     * @param type $prenom
+     * @return type $id
+     */
+    public function getIdVisiteur($nom, $prenom){
+        $requetePrepare = PdoGsb::$monPdo->prepare(
+                'SELECT visiteur.id AS id '
+                .'FROM visiteur '
+                .'WHERE visiteur.nom = :unNom AND visiteur.prenom = :unPrenom'
+        );
+        $requetePrepare->bindParam(':unNom', $nom, PDO::PARAM_STR);
+        $requetePrepare->bindParam(':unPrenom', $prenom, PDO::PARAM_STR);
+        $requetePrepare->execute();
+        $id = $requetePrepare->fetch();
+        return $id;
+    }
+    /**
+    * Fonction qui retourne la liste des visiteurs
+    *
+    * @param PDO $pdo instance de la classe PDO utilisée pour se connecter
+    *
+    * @return Array de visiteurs
+    */
+    function getLesVisiteurs()
+    {
+        $requetePrepare = PdoGsb::$monPdo->prepare(
+                'SELECT * '
+               .'FROM visiteur '
+               .'ORDER BY nom'
+        );
+        $requetePrepare->execute();
+        $lesVisiteurs = $requetePrepare->fetchAll();
+        return $lesVisiteurs;
+    }
+
     /**
      * Retourne les informations d'un comptable
      *
@@ -79,7 +115,7 @@ class PdoGsb//pour que l'application puisse entrer dans la base de donné
      *
      * @return l'id, le nom et le prénom sous la forme d'un tableau associatif
      */
-    public function getInfosComptable($login, $mdp)
+     public function getInfosComptable($login, $mdp)
     {
         $requetePrepare = PdoGsb::$monPdo->prepare(
             'SELECT comptable.id AS id, comptable.nom AS nom, '
@@ -87,10 +123,10 @@ class PdoGsb//pour que l'application puisse entrer dans la base de donné
             . 'FROM comptable '
             . 'WHERE comptable.login = :unLogin AND comptable.mdp = :unMdp'
         );
-        $requetePrepare->bindParam(':unLogin', $login, PDO::PARAM_STR);//variable dans laquel on enregistre tout ce que l'on a besoin pour la requette
+        $requetePrepare->bindParam(':unLogin', $login, PDO::PARAM_STR);
         $requetePrepare->bindParam(':unMdp', $mdp, PDO::PARAM_STR);
         $requetePrepare->execute();
-        return $requetePrepare->fetch();//fetch est un tableu qui retourne les resultats de la requete
+        return $requetePrepare->fetch();
     }
 
     /**
@@ -203,6 +239,7 @@ class PdoGsb//pour que l'application puisse entrer dans la base de donné
      */
     public function majFraisForfait($idVisiteur, $mois, $lesFrais)
     {
+        
         $lesCles = array_keys($lesFrais);
         foreach ($lesCles as $unIdFrais) {
             $qte = $lesFrais[$unIdFrais];
@@ -213,6 +250,7 @@ class PdoGsb//pour que l'application puisse entrer dans la base de donné
                 . 'AND lignefraisforfait.mois = :unMois '
                 . 'AND lignefraisforfait.idfraisforfait = :idFrais'
             );
+            
             $requetePrepare->bindParam(':uneQte', $qte, PDO::PARAM_INT);
             $requetePrepare->bindParam(':unIdVisiteur', $idVisiteur, PDO::PARAM_STR);
             $requetePrepare->bindParam(':unMois', $mois, PDO::PARAM_STR);
@@ -316,8 +354,8 @@ class PdoGsb//pour que l'application puisse entrer dans la base de donné
             $this->majEtatFicheFrais($idVisiteur, $dernierMois, 'CL');
         }
         $requetePrepare = PdoGsb::$monPdo->prepare(
-            'INSERT INTO fichefrais (idvisiteur,mois,nbjustificatifs,'
-            . 'montantvalide,datemodif,idetat) '
+            'INSERT INTO fichefrais (idvisiteur,mois,nbJustificatifs,'
+            . 'montantValide,dateModif,idEtat) '
             . "VALUES (:unIdVisiteur,:unMois,0,0,now(),'CR')"
         );
         $requetePrepare->bindParam(':unIdVisiteur', $idVisiteur, PDO::PARAM_STR);
@@ -327,7 +365,7 @@ class PdoGsb//pour que l'application puisse entrer dans la base de donné
         foreach ($lesIdFrais as $unIdFrais) {
             $requetePrepare = PdoGsb::$monPdo->prepare(
                 'INSERT INTO lignefraisforfait (idvisiteur,mois,'
-                . 'idfraisforfait,quantite) '
+                . 'idFraisForfait,quantite) '
                 . 'VALUES(:unIdVisiteur, :unMois, :idFrais, 0)'
             );
             $requetePrepare->bindParam(':unIdVisiteur', $idVisiteur, PDO::PARAM_STR);
@@ -390,6 +428,43 @@ class PdoGsb//pour que l'application puisse entrer dans la base de donné
         $requetePrepare->bindParam(':unIdFrais', $idFrais, PDO::PARAM_STR);
         $requetePrepare->execute();
     }
+    
+    /**
+     * Modifie le libelle d'un frais hors forfait pour un visiteur un mois donné
+     * à partir des informations fournies en paramètre
+     *
+     * @param String $idVisiteur ID du visiteur
+     * @param String $mois       Mois sous la forme aaaamm
+     * @param String $libelle    Libellé du frais
+     * @param String $date       Date du frais au format français jj//mm/aaaa
+     * @param Float  $montant    Montant du frais
+     *
+     * @return null
+     */
+    public function majFraisHorsForfait(
+        $idVisiteur,
+        $mois,
+        $libelle,
+        $date,
+        $montant
+    ) {
+        $dateFr = dateFrancaisVersAnglais($date);
+        $requetePrepare = PdoGSB::$monPdo->prepare(
+            'UPDATE lignefraishorsforfait '
+            . 'SET libelle = :unLibelle'
+            . 'WHERE idvisiteur = :unIdVisiteur'
+            . 'AND mois = :unMois'
+            . 'AND date = :uneDateFr'
+            . 'AND montant = :unMontant'
+        );
+        $requetePrepare->bindParam(':unIdVisiteur', $idVisiteur, PDO::PARAM_STR);
+        $requetePrepare->bindParam(':unMois', $mois, PDO::PARAM_STR);
+        $requetePrepare->bindParam(':unLibelle', $libelle, PDO::PARAM_STR);
+        $requetePrepare->bindParam(':uneDateFr', $dateFr, PDO::PARAM_STR);
+        $requetePrepare->bindParam(':unMontant', $montant, PDO::PARAM_INT);
+        $requetePrepare->execute();
+    }
+    
 
     /**
      * Retourne les mois pour lesquel un visiteur a une fiche de frais
@@ -435,13 +510,13 @@ class PdoGsb//pour que l'application puisse entrer dans la base de donné
     public function getLesInfosFicheFrais($idVisiteur, $mois)
     {
         $requetePrepare = PdoGSB::$monPdo->prepare(
-            'SELECT fichefrais.idetat as idEtat, '
-            . 'fichefrais.datemodif as dateModif,'
-            . 'fichefrais.nbjustificatifs as nbJustificatifs, '
-            . 'fichefrais.montantvalide as montantValide, '
+            'SELECT ficheFrais.idEtat as idEtat, '
+            . 'ficheFrais.dateModif as dateModif,'
+            . 'ficheFrais.nbJustificatifs as nbJustificatifs, '
+            . 'ficheFrais.montantValide as montantValide, '
             . 'etat.libelle as libEtat '
             . 'FROM fichefrais '
-            . 'INNER JOIN etat ON fichefrais.idetat = etat.id '
+            . 'INNER JOIN Etat ON ficheFrais.idEtat = Etat.id '
             . 'WHERE fichefrais.idvisiteur = :unIdVisiteur '
             . 'AND fichefrais.mois = :unMois'
         );
@@ -466,7 +541,7 @@ class PdoGsb//pour que l'application puisse entrer dans la base de donné
     {
         $requetePrepare = PdoGSB::$monPdo->prepare(
             'UPDATE ficheFrais '
-            . 'SET idetat = :unEtat, datemodif = now() '
+            . 'SET idEtat = :unEtat, dateModif = now() '
             . 'WHERE fichefrais.idvisiteur = :unIdVisiteur '
             . 'AND fichefrais.mois = :unMois'
         );
@@ -475,40 +550,44 @@ class PdoGsb//pour que l'application puisse entrer dans la base de donné
         $requetePrepare->bindParam(':unMois', $mois, PDO::PARAM_STR);
         $requetePrepare->execute();
     }
+    
     /**
-    * Retourne vrai si toutes les fiches du mois precdentes sont cloturées
-     * @param int $moisPrecedent Mois précédent le mois actuel
-    * @return vrai ou faux
-    */
-   public function clotureFiches($moisPrecedent)
-   {
-      $requetePrepare = PdoGSB::$monPdo->prepare(
-          'UPDATE ficheFrais.id '
-          . 'SET idEtat = CL'
-          . 'WHERE ficheFrais.idEtat = CR'
-          . 'AND ficheFrais.mois = :unMois'
-       ); 
-      $requetePrepare->bindparam(':unMois',$moisPrecedent, PDO::PARAM_STR);//Lie un paramètre à un nom de variable spécifique
-      $requetePrepare->execute();
-   }
-   
-
-
-    /**
-    *Fonction qui va recuperer les visiteurs
-     * @param int $moisPrecedent Mois précédent le mois actuel
-    * @return vrai ou faux 
-    */
-
-    Public Function getVisiteurs(){
-         $requetePrepare = PdoGSB::$monPdo->prepare(
-            'SELECT * '
-            .'FROM visiteur ' 
-            .'ORDER BY visiteur.nom'
-                 );
-        $requetePrepare->execute();  
-        $lesVisiteurs = $requetePrepare->fetch();
-        return $lesVisiteurs;
+     * Retourne vrai si toutes les fiches sont cloturées
+     *
+     * @return vrai ou faux
+     */
+    public function ficheDuMoisCloturees($moisPrecedent)
+    {
+        $boolReturn = false;
+        $requetePrepare = PdoGSB::$monPdo->prepare(
+                'SELECT fichefrais.idetat '
+                .'FROM fichefrais '
+                .'WHERE fichefrais.idetat = "CR" '
+                .'AND fichefrais.mois = :unMois '
+        );
+        $requetePrepare->bindParam(':unMois', $moisPrecedent, PDO::PARAM_STR);
+        $requetePrepare->execute();
+        if (!$requetePrepare->fetch()) {
+            $boolReturn = true;
+        }
+        return $boolReturn;
+                
     }
- 
+    
+    /**
+     * Fonction qui cloture les fiches du mois precedent non cloturees
+     * 
+     * @param type $moisPrecedent
+     */
+    public function clotureFiches($moisPrecedent){
+        $requetePrepare = PdoGSB::$monPdo->prepare(  
+             'UPDATE fichefrais '
+            . 'SET fichefrais.idetat = "CL" '
+            . 'WHERE fichefrais.idetat= "CR" '
+            . 'AND fichefrais.mois = :moisPrecedent '
+            );
+        $requetePrepare->bindParam(':moisPrecedent', $moisPrecedent, PDO::PARAM_STR);
+        $requetePrepare->execute();
+    }
 }
+

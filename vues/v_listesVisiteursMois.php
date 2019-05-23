@@ -1,4 +1,4 @@
-<form action="index.php?uc=etatFrais&action=validerVM" 
+<form action="index.php?uc=validFrais&action=validerVM" 
     method="post" role="form">
     <fieldset>
         <div class="col-md-4">   
@@ -6,7 +6,7 @@
                 <label for="lstVisiteur" accesskey="n"> Choisir les visiteurs : </label>
                 <select id="lstVisiteur" name="lstVisiteur" class="form-control">
                     <?php
-                    foreach ($visiteurs as $unVisiteur) {
+                    foreach ($lesVisiteurs as $unVisiteur) {
                         $id = $unVisiteur['id'];
                         $nom = $unVisiteur['nom'];
                         $prenom = $unVisiteur['prenom'];

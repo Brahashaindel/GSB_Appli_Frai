@@ -15,6 +15,8 @@ case 'valideConnexion':
     $mdp = filter_input(INPUT_POST, 'mdp', FILTER_SANITIZE_STRING);
     $visiteur = $pdo->getInfosVisiteur($login, $mdp);
     $comptable = $pdo->getInfosComptable($login, $mdp);
+    
+    
     if (!is_array($visiteur)&& !is_array($comptable)) {//array veut dire contenu!
         ajouterErreur('Login ou mot de passe incorrect');
         include 'vues/v_erreurs.php';

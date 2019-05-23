@@ -14,6 +14,7 @@ if ($uc && !$estConnecte) {//il faut qu'il yest uc et qu'il ne soit pas connect√
     $uc = 'accueil';
 }
 
+
 switch ($uc) {//test sur uc avec plusieurs choix 
 case 'connexion'://uc doit aller dans connexion
     include 'controleurs/c_connexion.php';//inclure cette page php

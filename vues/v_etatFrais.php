@@ -1,6 +1,4 @@
-<?php
 
-?>
 <hr>
 <div class="panel panel-primary">
     <div class="panel-heading">Fiche de frais du mois 
@@ -43,7 +41,6 @@
             <th class="libelle">Libellé</th>
             <th class='montant'>Montant</th>                
         </tr>
-        
         <?php
         foreach ($lesFraisHorsForfait as $unFraisHorsForfait) {
             $date = $unFraisHorsForfait['date'];

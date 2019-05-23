@@ -8,39 +8,53 @@
  */
 function estConnecte()
 {
-    return isset($_SESSION['idUtilisateur']);//retourne l'instruction demandé qui est isset. isset détérmine si une variable est définie et est différente de null 
+    return isset($_SESSION['idUtilisateur']);
 }
+/**
+ * Teste si un visiteur est connecté
+ *
+ * @return vrai ou faux
+ * 
+ */
 
 function estVisiteurConnecte()
 {
     if (estConnecte()){
-    return ($_SESSION['statut']=='visiteur');
-    }
+        return ($_SESSION['statut']== 'visiteur');
+    }   
 }
+
+/**
+ * Teste si un comptable est connecté
+ *
+ * @return vrai ou faux
+ */
 
 function estComptableConnecte()
 {
     if (estConnecte()){
-    return ($_SESSION['statut']=='comptable');
-    }
+        return ($_SESSION['statut'] == 'comptable');
+    }   
 }
+
 /**
- * Enregistre dans une variable session les infos d'un utilsateur
+ * Enregistre dans une variable session les infos d'un Utilisateur
  *
- * @param String $idUtilisateur ID du utilisateur
- * @param String $nom        Nom du utilisateur
- * @param String $prenom     Prénom du utiliteur
+ * @param String $idVisiteur ID de l' Utilisateur
+ * @param String $nom        Nom de l' Utilisateur
+ * @param String $prenom     Prénom de l'Utilisateur
  *
  * @return null
  */
-function connecter($idUtilisateur, $nom, $prenom,$statut)//déclaration d'une fonction avec le nom suivie de ses parametres qui sont des variables. les variables sont précédé de $
+function connecter($idUtilisateur, $nom, $prenom, $statut)
 {
-    $_SESSION['idUtilisateur'] = $idUtilisateur;//$_session s'utilise lorsque l'on ouvre une variable
+    $_SESSION['idUtilisateur'] = $idUtilisateur;
     $_SESSION['nom'] = $nom;
     $_SESSION['prenom'] = $prenom;
-    $_SESSION['statut']=$statut;
+    $_SESSION['statut'] = $statut;
 }
 
+    
 /**
  * Détruit la session active
  *
@@ -48,7 +62,7 @@ function connecter($idUtilisateur, $nom, $prenom,$statut)//déclaration d'une fo
  */
 function deconnecter()
 {
-    session_destroy();//detruit une session
+    session_destroy();
 }
 
 /**
@@ -61,8 +75,8 @@ function deconnecter()
  */
 function dateFrancaisVersAnglais($maDate)
 {
-    @list($jour, $mois, $annee) = explode('/', $maDate);//list place les variables jour, mois, annee en tableau
-    return date('Y-m-d', mktime(0, 0, 0, $mois, $jour, $annee));//mktime donne le forma de la date
+    @list($jour, $mois, $annee) = explode('/', $maDate);
+    return date('Y-m-d', mktime(0, 0, 0, $mois, $jour, $annee));
 }
 
 /**
@@ -75,7 +89,7 @@ function dateFrancaisVersAnglais($maDate)
  */
 function dateAnglaisVersFrancais($maDate)
 {
-    @list($annee, $mois, $jour) = explode('-', $maDate);//explode — Coupe une chaîne en segments
+    @list($annee, $mois, $jour) = explode('-', $maDate);
     $date = $jour . '/' . $mois . '/' . $annee;
     return $date;
 }
@@ -89,15 +103,15 @@ function dateAnglaisVersFrancais($maDate)
  */
 function getMois($date)
 {
-    @list($jour, $mois, $annee) = explode('/', $date);//sert 
-    unset($jour);//unset — Détruit une variable
-    if (strlen($mois) == 1) {//strlen — Calcule la taille d'une chaîne
-        $mois = '0' . $mois;//concarénation du mois et 0
+    @list($jour, $mois, $annee) = explode('/', $date);
+    unset($jour);
+    if (strlen($mois) == 1) {
+        $mois = '0' . $mois;
     }
     return $annee . $mois;
 }
 
- /**
+/**
  * Fonction qui retourne le mois précédent un mois passé en paramètre
  *
  * @param String $mois Contient le mois à utiliser
@@ -106,7 +120,7 @@ function getMois($date)
  */
 function getMoisPrecedent($mois)
 {
-    $numAnnee = substr($mois, 0, 4);//Retourne un segment de chaîne allant du caractère 0 au 4
+    $numAnnee = substr($mois, 0, 4);
     $numMois = substr($mois, 4, 2);
     if ($numMois == '01') {
         $numMois = '12';
@@ -114,11 +128,12 @@ function getMoisPrecedent($mois)
     } else {
         $numMois--;
     }
-    if (strlen($numMois) == 1) {//Calcule la taille d'une chaîne
+    if (strlen($numMois) == 1) {
         $numMois = '0' . $numMois;
     }
     return $numAnnee . $numMois;
 }
+
 
 /* gestion des erreurs */
 
@@ -131,7 +146,7 @@ function getMoisPrecedent($mois)
  */
 function estEntierPositif($valeur)
 {
-    return preg_match('/[^0-9]/', $valeur) == 0;//preg_match — Effectue une recherche de correspondance avec une expression rationnelle standard
+    return preg_match('/[^0-9]/', $valeur) == 0;
 }
 
 /**
@@ -268,6 +283,28 @@ function nbErreurs()
     if (!isset($_REQUEST['erreurs'])) {
         return 0;
     } else {
-        return count($_REQUEST['erreurs']);//count — Compte tous les éléments d'un tableau ou quelque chose d'un objet
+        return count($_REQUEST['erreurs']);
     }
 }
+
+/**
+ * Retourne une liste des douzes mois précédents du mois précédent
+ * 
+ * @param $mois
+ * @return Array liste des mois
+ */
+function getLesDouzeDerniersMois($mois){
+    $lesMois= array();
+    for ($k=0;$k<=12;$k++){
+        $mois= getMoisPrecedent($mois);
+        $numAnnee = substr($mois,0,4);
+        $numMois = substr($mois,4,2);
+        $lesMois [] = array(
+            'mois'=> $mois,
+            'numAnnee'=> $numAnnee,
+            'numMois'=> $numMois
+        );
+    }
+    return $lesMois;
+}
+
